@@ -1,0 +1,50 @@
+List of changes in all files
+
+in usys.S
+  SYSCALL(trace)
+  SYSCALL(date)
+  are added to line 32 and 33
+  
+in user.h
+  int trace(int);
+  int date(struct rtcdate*);
+  are added to line 26 and 27
+  
+in syscall.h
+  #define SYS_trace  22
+  #define SYS_date   23
+  are add to line 23 and 24
+  
+in sysproc.c
+  int sys_trace(void) method's role is to turn trace on when we call trace(1) or turn off when we call trace(0), line 95
+  int sys_date(void) method's role is get struct for date using cmostime.
+  
+in syscall.c
+  extern int sys_trace(void);
+  extern int sys_date(void);
+  are added to line 106 and 107
+  
+  [SYS_trace]   sys_trace,
+  [SYS_date]    sys_date,
+  are added to line 131 and 132
+  
+  trace(0) is added to line 142. trace would be called in every syscall. 
+  
+in proc.h
+  int traceon;
+  int totalcalls; 
+  member variables are added in line 52 and 53 to keep track of status of trace and total system calls
+  
+in proc.c
+  const char *callnames[]  is add line 15 as an array to store syscalls' name. I can be accessed to print out the syscall name.
+  p->traceon = 0; is add in line 96 to initialize traceon
+  p->totalcalls = 0; is add in line 96 to initialize totalcals
+  void trace(int input) is added in line 544 to print 
+      the process ID
+      the process name
+      the system call number
+      the system call name
+      
+ in date.c
+  format of date is added in line 18
+

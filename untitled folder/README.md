@@ -1,0 +1,30 @@
+# CS350P1
+Team member: Hieu Nguyen and Nathan Marchant
+
+To compile:
+
+In xv6-public-master
+
+Step 1: Install qemu:
+
+$ sudo apt-get install qemu
+
+Step 2: Compile xv6
+
+$ make 
+
+Step 3: Compile and run the emulator qemu:
+
+$ make qemu
+
+or
+
+$ make qemu-nox
+
+Step 4: Compile part 1 
+
+$ test_project1
+
+Step 6: Compile part 2
+
+$ date
