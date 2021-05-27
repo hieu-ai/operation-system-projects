@@ -1,0 +1,87 @@
+List of changes in all files:
+in usys.S
+  +SYSCALL(getpinfo)
+  line 32, adding syscall
+
+in trap.c
+  +Boost mechanism every tick
+    //Once wait time exceeds 50 ticks put process into q0
+    //Increase wait time where appropriate
+  +increase process tick counter every tick
+  +yield only at specific time slices
+  lines 115, 141, and 143
+
+in proc.h
+  +int getpinfo(int pid);
+  +int times[3];
+  +int ticks[3];
+  +uint wait_time;
+  +int total_ticks;
+  +int tick;
+  +int priority;
+  +struct sched_stat_t sched_stats[NSCHEDSTATS];
+  +int num_stats_used;
+  lines 20 for getpinfo, 59 to 66 for everything else. Booking keeping for printing, process tick count, priority, etc.
+
+in user.h
+  +int getpinfo(int);
+  line 26
+
+in sysproc.c
+  +sys_getpinfo
+  line 94, adding syscall
+
+in syscall.h
+  +#define SYS_getpinfo  22
+  added line 23 for syscall
+
+in syscall.c
+  +extern int sys_getpinfo(void);
+  +[SYS_getpinfo]   sys_getpinfo,
+  added lines 106 and 130 for syscall
+
+in pstat.h
+  +struct{start_tick, duration, priority}
+  file added for printing, graphing, and recording of processes
+
+in proc.c
+  +struct proc* q0[NPROC];
+  +struct proc* q1[NPROC];
+  +struct proc* q2[NPROC];
+  +uint time_slice[3] ={1,2,8};
+  +uint c0=0;
+  +uint c1=0;
+  +uint c2=0;
+  +uint prevStart = 0;
+  +bool tickPass = false;
+  lines 16 to 28, //create queues, keep track of end of queues, and other bookkeeping
+  +allocproc(void):
+    //make sure to remove duplicate processes
+    //initialize all new processes bookkeeping information
+    //new process goes to q0 after removing and shifting duplicates
+  lines 115 to 154
+  +getpinfo(int pid)
+    //print process information and book keeping
+  line 687
+  +void scheduler_helper()
+    //record sched stats properly like duration, total recorded
+    //update elapsed ticks in queue
+    //add+1 to times per execution
+  lines 489 to 506
+  +scheduler(void) (changes)
+    //loop through each queue starting with q0
+      //find runnable, move to next queue once time slice elapsed, update priority
+      //in q3 move to the end of the queue on elapsed slice
+  lines 399 to 482
+
+in test1.c
+  //IO intensive job includes reading and writing from a file
+  //CPU intensive job does a bunch of math and to prevent optimization
+
+in test2.c
+  //Runs a bunch more processes so boosting can happen through longer wait times
+  //IO intensive job includes reading and writing from a file
+  //CPU intensive job does a bunch of math and to prevent optimization
+
+in test3.c
+  //One process calls sleep to stay in q1 continually to trick scheduler to yield

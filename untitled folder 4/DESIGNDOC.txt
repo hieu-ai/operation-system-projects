@@ -1,0 +1,55 @@
+List of changes in all files:
+in mmu.h
+  #define PTE_SH          0x200
+  line 99
+
+in vm.c
+  +struct spinlock lock;
+    //lock used to prevent issues with counter
+  +unsigned char counter[PHYSTOP/PGSIZE];
+    //counter used to prevent
+  +void pagefault()
+  +pde_t* cow(pde_t *pgdir, uint sz)
+    //copy on write, similar to copy
+    //sets relevant flags, maps, increases counter, performs a final call to "reinstall" TLB entries
+  +deallocuvm
+    //Added dealloc counter decrease
+  +allocuvm
+    //Added alloc counter increase
+  lines 17, 18, 445, 373, 291, and 232
+
+in proc.c
+  +extern struct spinlock lock;
+  +extern unsigned char counter[PHYSTOP/PGSIZE];
+  +added cow() call in place of copyuvm
+  +procdump(void)
+    //added printing of all relevant entries indexs and pa and writeable
+  lines 22, 23, 198, 540
+
+in defs.h
+  +pde_t*			cow(pde_t*, uint);
+  +void			pagefault(void);
+  lines 188, 189
+
+in trap.c
+  +case T_PGFLT:
+    //Added to call pagefault function on creation
+  line 80
+
+in testcow.c
+  //file provided to us, used to run test cases
+
+in syscall.c
+  +extern int sys_procdump(void);
+  +[SYS_procdump] sys_procdump,
+  lines 106, 130
+
+in usys.s ???
+  +SYSCALL(procdump)
+  //line 32
+
+in syscall.h ???
+  +#define SYS_procdump 22
+  //line 23
+
+??? more added for syscalls

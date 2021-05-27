@@ -1,0 +1,60 @@
+List of changes in all files:
+in exec.c
+  +void kill_others();
+  +kill_others();
+  added to lines 12 and 34
+
+in kthread.h
+  +int kthread_create(void* (*start_func)(), void* stack, int stack_size); create a new thread
+  +int kthread_id(); return the id of a thread
+  +void kthread_exit();
+  +int kthread_join(int thread_id);
+  +int kthread_mutex_alloc();
+  +int kthread_mutex_dealloc(int mutex_id);
+  +int kthread_mutex_lock(int mutex_id);
+  +int kthread_mutex_unlock(int mutex_id);
+  +define MAX_MUTEXES		64
+  added on lines 5 through 18, function declarations
+
+in sysproc.c
+  +sys_kthread_create(void)
+  +sys_kthread_id(void)
+  +sys_kthread_exit(void)
+  +sys_kthread_join(void)
+  +sys_kthread_mutex_alloc(void)
+  +sys_kthread_mutex_dealloc(void)
+  +sys_kthread_mutex_lock(void)
+  +sys_kthread_mutex_unlock(void)
+  added lines 103 to 198. Defines the sys calls and gets parameter to call to appropriate functions.
+
+in syscall.c
+  +[SYS_kthread_create] sys_kthread_create,
+  +[SYS_kthread_id] sys_kthread_id,
+  +[SYS_kthread_exit] sys_kthread_exit,
+  +[SYS_kthread_join] sys_kthread_join,
+  +[SYS_kthread_mutex_alloc] sys_kthread_mutex_alloc,
+  +[SYS_kthread_mutex_dealloc] sys_kthread_mutex_dealloc,
+  +[SYS_kthread_mutex_lock] sys_kthread_mutex_lock,
+  +[SYS_kthread_mutex_unlock] sys_kthread_mutex_unlock,
+  added on line 136
+
+in proc.h
+  +struct mutex -- struct for mutex
+  +enum mutexstate { M_UNUSED, M_LOCKED, M_UNLOCKED }  -- states for mutex
+  added on lines 58 and 72
+
+in proc.c
+  +int kthread_create(void* (*start_func)(), void* stack, int stack_size) -- create a thread for calling process
+  +int kthread_id() -- get thread id
+  +int kthread_exit() -- terminate thread and sometimes process
+  +int kthread_join(int thread_id) -- wait to run until target thread terminates
+  +int kthread_mutex_alloc() -- allocate mutex, set state to unlocked
+  +int kthread_mutex_dealloc(int mutex_id) -- de-allocate mutex which is no longer needed
+  +int kthread_mutex_lock(int mutex_id) -- used by thread to lock the mutex
+  +int kthread_mutex_unlock(int mutex_id) -- unlock the mutex based on mutex_id
+  - Those functions added lines 646 to 846
+
+  +struct mtable added lines 19
+  +added locks for growproc() -- lines 182, 189, 197
+  +kill_all(void) -- added lines 259
+  +exit() --  add method kill_all() lines 309

@@ -1,0 +1,37 @@
+List of changes in all files:
+
+Hieu
+in param.h
+  +#define FSSIZE       20000
+  //increase size
+  changed code on line 13
+
+Hieu
+in fs.h
+  +#define NDIRECT 11
+  +#define NDOUBLYINDIRECT 16384
+  +#define MAXFILE (NDIRECT + NINDIRECT + NDOUBLYINDIRECT)
+  +uint addrs[NDIRECT+2];   // Data block addresses
+  //allow for doubly indirect through proper size increases
+  changed code in lines 12, 13, and 144
+  added code on line 24, 27, 36
+
+Nathan
+in file.h
+  +uint addrs[NDIRECT+2];
+  changed code on line 25
+
+Nathan
+Makefile:
+  +	_testfs\
+  +	testfs.c\
+  //test cases
+  lines 184 and 258
+
+Hieu and Nathan
+in fs.c
+  +bamp()
+    //added handling for double indirect
+    //goes through levels through index calculation and balloc
+    //returns final address
+  lines 398 until end of function

@@ -1,0 +1,15 @@
+NOTE: To generate the graphs we used a public python script to automatically generate time slices using the output text from console.
+
+Test 1: In this first graph we have two processes, one with a CPU intensive workload one with IO intensive. Green (IO intensive) runs first for 1 tick in q0, and then
+is forced to q1 as is protocol where it continues to run. Purple (CPU intensive) then starts execution in q0, and similarly enters q1 to run its 2 ticks. After 2 ticks both processes
+enters q2, and alternate running at intervals of 8 ticks until the green process completes, leaving the final process to take up the remaining time until it completes.
+
+Test 2: Although there is a lot going on the the graph, boosting can be clearly seen as when dark blue process hit q2,
+and then are seen running in q0 for 1 tick after a long wait, indicating boosting is working. With all these processes running
+no one process is using more time slices than allow per queue and processes are jumping to q0 from the boost mechanism.
+Without a boosting mechanism these processes would get congested in q2, and instead after a set wait are given a second chance
+to make progress towards completion by jumping to q0 and repeating this cycle.
+
+Test 3: Because the process continually calls sleep, forcing a yield. The sleep call
+interferes with process, tricking the process to not go to q2. It can get out before the CPU increase the tick. When the process wake up after voluntarily giving up the CPU it stays at the same priority level. If we could graph the durations it would run
+some time in q0, but the slots are too small to show and the graph is empty for this reason
